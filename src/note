@@ -1,0 +1,192 @@
+                                Architech of this app
+        
+        Props
+                                App
+                              (items)
+                                 |
+                                 | (pass down "items" item to Accodion)
+                                 |
+                                 |
+                             Accordion
+                              (items)
+
+
+
+
+
+                                            Hooks System
+
+=> useState -> function that lets u use "state" in a functional component
+=> useEffect -> function that lets u use omething like "lifecycle methods" in a functional component
+=> useRef -> function that let you create a "ref" in a functional component
+NOTE: Hooks are a way to write erusable code, instead of more classic techniques like Inheritance.
+
+
+                                Primative Hooks (a collection different functions )
+These are 10 functions that are included with REact to give more functionality to function component:
+=> useState (used with Accordian component)
+=> useEffect
+=> useContext
+=> useReducer
+=> useCallback
+=> useMemo
+=> useRef
+=> useImparativeHandle
+=> useLayoutEffect
+=> useDebugValue
+
+                                  The "useEffect" Hook
+=> Allows function component to use something similar to lifecycle methods
+=> We configure the hook to run some code automatically in one of three senerios:
+  => 1. When the component is rendered for the 1st time only. (means that whenever our function component is first delayed on the screen, we can make use of "useEffect" to run some code) -> []
+  => 2. When the component is rendered for the 1st time and whenever it rerenders. -> nothing
+  => 3. When the component is rendered for the 1st time and whenever it rerenders and some piece of data has changed. -> [data]
+
+
+                                useEffect's Cleanup function
+=> Whenever we call a useEffect(), and we provide a function as the 1st argument, there 's only one possible value that we can return from this function(the argument function), only type of value, is...Another Function!!!. But this returned function will be called when the component rerenders(has some changes)
+=> Whenever the component first renders, the whole arrow function(the argument function) is invoked overall and it returns a function(if we defined a return statement). BUT💥💥 when anytime that the arrow function is run again, 1st React is going to call the returned function and then it will call the overall function again(means everything in the arrow function including the returned function too(means it will return a return function, but code in the returned function will not be run, untill component rerenders again))
+=> SUM: When component 1st render, the arrow function(useEffect() 1st argument) is invoked everything inside there is run EXCEPT the the code in the returned function. But when data changes, useEffect() is called again, the arrow function is invoked But react will run the returned function 1st, then run the overal in the arrow function (means everything in the arrow function including the returned function too).
+=> In this app, we use the returned function to call the cleanup function or stop some function.
+
+                                onClick
+=> When the user clicks on the item, What goes behind the scenes?
+=> The browser then creates an event object, the event object describes an info about the click, ex. where the user's mouse was on the screen, what the element the user just clicked on.
+=> The browser then hands that event object off to React, React does a little bit of processing on that event and provides an event object to our onClick event handler
+=> That's why event object always be  provided to onClick() 
+
+                              Event Bubbing
+=> Whenever the user clicks on the element, the event does NOT STOP there.(class= item)
+=> Instead, this event object then travels up to the nexrt parent element.
+=> If that parent element has a click event handler on it, it is automatically invoked. (class=menu visible transition)
+=> Then the event object goes up to the next parent element. (class= ui selection dropdown...)
+=> If that parent element has a click event handler on it, it is also automatically invoked with this event object.
+=> And then the event travels up to all thses successive parent elements.
+=> And in every step, the browser checks to see if that element has a click event handler. If it does, it is automatically invoked. 
+=> The Event is bubbling up to all the way of its parents.
+=> NOTE: The order in which Event Listeners are invoked, all the Event Listeners that were wired up using addEventListener actually get called first ex. document.body.addEventListener(), after that, all of our React addEventListeners get called ex. onClick() attributes that we add in the returned JSX. And it's always from the most child element up to the most parent
+
+                                useRef
+=> Allows us to get a reference to a direct DOM element
+=> Here we are going to make use of useRef to get a reference to the most parent element that has been created by the dropdown, in this case <div class= ui form>
+=> We r going to take a look at <div class= ui form>, and the one that was clicked on, and decide whether or not the element that was clicked on is inside of <div class= ui form>
+=> NOTE: Whenever we remove the component from the DOM, all the refs that are attached to the elements inside that component, get set to "null" coz it no longer has an element to refer to.
+
+                                    Translate Widget
+                            -------------------------------
+
+                                App
+                                |
+                                |
+                            Translate
+                  (options, language, setLanguage)
+                      |                   |
+                      |                   |
+                  Dropdown              Convert
+(options, language, setLanguage)      -> Accept 2 props; language & text
+                                      -> A new value for 'language' or 'text' has appeared!
+                                          We should convert it and show the out put
+                                      -> Make request to google translate API
+                                      -> Update state with data from response
+                                      -> Show data from response on the screen.
+
+
+
+                                      SECTION 13
+                _______________________________________________________
+
+                                  Majority of React apps use React-Router
+However .......
+=> React-Router has frequent breakimg changes
+=> More important to learn the ideas and theory of navigation
+=> We are going to build some navigation from scratch
+=> React-Router will be covered later in the course
+
+                                  Route Mapping
+
+            localhost:3000/           ----------->      Accordian
+            localhost:3000/list       ----------->      Search 
+            localhost:3000/dropdown   ----------->      Dropdown
+            localhost:3000/translate  ----------->      Translate  
+
+
+      window.localhost.pathname === '/'           ---------->    Accordian 
+      window.localhost.pathname === '/list'       ---------->    Search 
+      window.localhost.pathname === '/dropdown'   ---------->    Dropdown 
+      window.localhost.pathname === '/translate'  ---------->     Translate
+
+      
+
+                                    Link Routing Mapping
+
+                                            Header
+                                              |
+                                             Link
+                                              |
+                                      Navigation Event
+                        (It's generated whenever user clicks the link)
+                                              |
+                                              |
+        _________________________________________________________________________________
+        |                             |                           |                       |
+      Route                          Route                       Route                   Route
+        |                             |                           |                        |
+    Accordian                       Search                    Dropdown                  Translate
+                            
+
+
+                                    Handling Navigation
+=> Each time user click the link (Accordion, Search,.. ), it creates a huge traffic on Network. It makes a lot of requests coz everytime we click a link, we have to load index.html, css files and other files attached with this app. Its not a good way to do it. 
+
+Our Solution:
+
+=> User clicks on link
+=> Change the URL but dont do full page refresh. In Link.js -> onClick()
+=> Each Route could detect the URL has changed. In Route.js -> useEffect() -> onLocationChange()
+=> Route could update piece of state tracking the current pathname. In Route.js -> useEffect() -> onLocationChange() -> setCurrentPath()
+=> Each Route rerenders, showing/hinding components appropriately.
+
+
+
+                      
+
+
+
+                                API used with this app
+
+==> Wikipedia API
+  NOTE: this API does not requires any authentication or any API keys.
+  👉How to use:
+  => Make a get request to en.wikipedia.org/w/api.php?action=query&list=search&format=json&srsearch=SEARCHTERM. Note that "SEARCHTERM" means whatever inputs that the user type in.
+  => If u copy the URL above and search on browser, u will see the kind of data that u gonna get back in response
+==> Google Translate API Docs
+  => cloud.google.com/translate/docs
+  => It's NOT a free API, need to pay to get an API key
+  => But for this app, we ll get it for free but it only works if u run on localhost:3000
+  How to use:
+  => Go to cloud.google.com/translate/docs -> REST API -> REST reference -> Basic -> Translate
+  => You ll see the POST request URL + query parameters
+  => The parameter "target" gives the info over the language code specificly used with google translate
+  => Provide *** API key *** as a parameter in the POST request
+
+
+✅✅✅✅ Interesting things learned from this app ✅✅✅✅
+=> How to turn "string" that is written in HTML into a JSX, by setting it in a <span> and use a prop named "dangerouslySetInnerHTML" (it's a hidden functionality, dangerous to use)
+  Ex. <span dangerouslySetInnerHTML={{ __html: result.snippet }}> (In Search.js)
+  NOTE: But doing this is not reccomened. Coz anytime u take a string from a 3rd party like API, u could be introducing a security hole into your application, especially a type of security hole called an " XSS attack" XSS stands for "cross site scripting attack" , that is where we accidentally pick up and render HTML from an untrusted source that can allow some hackers to execute some JS inside our application.
+=> Use "clearTimeout(ID of the prevoius timeout)" to cancle the prevoius timeout.
+=> NOTE: return null in React == dont render anything
+=> How to use turnery statement in the new style (Dropdown.js)
+=> How to use useRef (Dropdown.js)
+=> How to use ref.current
+=> How to use contains() with DOM elements. It allows us to check if one DOM element is inside another
+=> How to use removeEventListener (Dropdown.js)
+=> window.location  === an object that is built into your browser. This object is going to be navvy or updated anytime you navigate around to a different URL. It gives lots of info of the URL you current at ex. href, pathname, port, hostname, host, etc. In this case we are going to take the 'pathname' from it. The pathname = everything after the domain and the port, after localhost:3000
+
+❓❓❓❓❓❓I still don't under stand this topic ❓❓❓❓❓❓
+=>  About Promise
+    => Why "const search = await axios.get("url") " is not a promise way?
+    => Why "axios.get("url").then() " is a Promise way?
+    => How different to destructuring Array and Object? Have to test!!
+
+
