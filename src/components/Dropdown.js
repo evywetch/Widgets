@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 
 const Dropdown = ({ label, options, selected, onSelectedChange }) => {
-  const [textColor, setTextColor] = useState('red');
+  // const [textColor, setTextColor] = useState('red');
+
   // this state will track when the user clicks to toggle the dropdown
   const [open, setOpen] = useState(false);
   /*
@@ -51,7 +52,7 @@ const Dropdown = ({ label, options, selected, onSelectedChange }) => {
         key={option.value}
         className="item"
         onClick={() => {
-          setTextColor(option.value);
+          
           onSelectedChange(option);
         }}
       >
@@ -76,11 +77,19 @@ const Dropdown = ({ label, options, selected, onSelectedChange }) => {
           </div>
         </div>
       </div>
-      <p style={{ color: `${textColor}` }}>
-        This text is {textColor ? textColor : 'red'}
-      </p>
+      
     </div>
   );
+  /*
+  => Optional
+  => This is the part where the text color will response to the color that user selects in dropdown
+
+  <p style={{ color: `${textColor}` }}>
+        This text is {textColor ? textColor : 'red'}
+  </p>
+
+  setTextColor(option.value);  => set in onClick={}
+  */
 };
 
 export default Dropdown;
