@@ -11,7 +11,7 @@ const Header = () => {
   return (
     <div className="ui secondary pointing menu">
       <Link href="/" className="item">
-        Accordian
+        Accordion
       </Link>
       <Link href="/list" className="item">
         Search
